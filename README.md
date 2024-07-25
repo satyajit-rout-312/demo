@@ -1,3 +1,3 @@
 # demo
 my 1st repository
-author-satya
+author-satya....
