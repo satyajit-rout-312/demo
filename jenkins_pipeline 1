@@ -1,1 +1,29 @@
-
+pipeline {
+    agent any
+    tools{
+        maven 'maven'
+        jdk 'jdk 17'
+    }
+    stages {
+        stage('check_out_source_code') {
+            steps {
+                git branch: 'main', credentialsId: 'satyajit-rout-312', url: 'https://github.com/satyajit-rout-312/demo.git'
+            }
+        }
+        stage('compile-the-sourcecode'){
+            steps{
+               sh 'mvn compile'
+            }
+        }
+        stage('package'){
+            steps{
+                sh 'mvn clean package'
+            }
+        }
+        stage('deploy'){
+            steps{
+                sh 'scp /var/lib/jenkins/workspace/pipelineproject@2/target/our-school-1.0-SNAPSHOT.war ubuntu@172.31.17.94:/var/lib/tomcat9/webapps '
+            }
+        }
+    }
+}
