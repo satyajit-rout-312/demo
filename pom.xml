@@ -45,7 +45,7 @@
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
                 <artifactId>sonar-maven-plugin</artifactId>
-                <version>${sonar.maven.plugin.version}</version> <!-- Use the latest version compatible with your SonarQube server -->
+                <version>$6.2.1.4610</version> <!-- Use the latest version compatible with your SonarQube server -->
             </plugin>
         </plugins>
     </build>
