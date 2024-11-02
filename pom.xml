@@ -42,6 +42,11 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring.boot.version}</version> <!-- Specify version here -->
             </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar.maven.plugin.version}</version> <!-- Use the latest version compatible with your SonarQube server -->
+            </plugin>
         </plugins>
     </build>
 </project>
