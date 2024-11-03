@@ -1,28 +1,54 @@
 pipeline {
     agent any
-    tools{
+    tools {
         maven 'maven'
-        jdk 'jdk 17'
+        jdk 'jdk'
+    }
+    environment {
+        SONAR_SCANNER_HOME = tool 'sonarscanner'
+        SONAR_TOKEN = credentials('sonartoken')
+        SONAR_PROJECT_KEY = 'pipeline312_pipeline'
+        SONAR_ORG = 'pipeline312'
+        SONAR_CLOUD_URL = 'https://sonarcloud.io'
     }
     stages {
-        stage('check_out_source_code') {
+        stage('Checkout') {
             steps {
-                git branch: 'main', credentialsId: 'satyajit-rout-312', url: 'https://github.com/satyajit-rout-312/demo.git'
+                git branch: 'main', url: 'https://github.com/satyajit-rout-312/demo.git'
             }
         }
-        stage('compile-the-sourcecode'){
-            steps{
-               sh 'mvn compile'
+        stage('compile') {
+            steps {
+                sh 'mvn compile'
             }
         }
-        stage('package'){
+        stage('test') {
             steps{
-                sh 'mvn clean package'
+                sh 'mvn package'
             }
         }
-        stage('deploy'){
-            steps{
-                sh 'scp /var/lib/jenkins/workspace/pipelineproject@2/target/our-school-1.0-SNAPSHOT.war ubuntu@172.31.17.94:/var/lib/tomcat9/webapps '
+        stage('trivy') {
+            steps {
+                script {
+                     // Disable VEX notice
+                    env.TRIVY_DISABLE_VEX_NOTICE = 'true'
+                    // Run Trivy scan
+                    sh """
+                    trivy fs --quiet --severity HIGH,CRITICAL --exit-code 1 /usr/bin/trivy
+                    """
+                }
+            }
+       }
+        stage('SonarCloud Analysis') {
+            steps {
+                    sh """
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                        -Dsonar.organization=${SONAR_ORG} \
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.login=${SONAR_TOKEN}
+                    """
+                
             }
         }
     }
