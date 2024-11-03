@@ -24,6 +24,11 @@ pipeline {
         }
         stage('test') {
             steps{
+                sh 'mvn test'
+            }
+        }
+        stage('package') {
+            steps{
                 sh 'mvn package'
             }
         }
@@ -39,7 +44,7 @@ pipeline {
                 }
             }
        }
-        stage('SonarCloud Analysis') {
+       stage('SonarCloud Analysis') {
             steps {
                     sh """
                         mvn sonar:sonar \
@@ -50,6 +55,11 @@ pipeline {
                     """
                 
             }
+        }
+    }
+    post {
+        success {
+            slackSend channel: 'project', message: 'project success'
         }
     }
 }
