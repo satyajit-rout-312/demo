@@ -27,11 +27,6 @@ pipeline {
                 sh 'mvn test'
             }
         }
-        stage('package') {
-            steps{
-                sh 'mvn package'
-            }
-        }
         stage('trivy') {
             steps {
                 script {
@@ -54,6 +49,37 @@ pipeline {
                         -Dsonar.login=${SONAR_TOKEN}
                     """
                 
+            }
+        }
+        stage('package') {
+            steps{
+                sh 'mvn clean package'
+            }
+        }
+        stage('deploy') {
+            steps {
+                 withMaven(globalMavenSettingsConfig: 'd545ddb5-ad2b-4fff-97d7-539c1766475e', jdk: 'jdk', maven: 'maven', traceability: true)
+                {
+                    sh 'mvn deploy'
+                }
+            }
+        }
+        stage('Buildandtagdockerimage') {
+            steps {
+                script {
+                     withDockerRegistry(credentialsId: 'dockerid', toolName: 'dockertool') {
+                         sh "docker build -t rajkumarsatya/srimage4 ."
+                     } 
+                }
+            }
+        }
+        stage("push docker image") {
+            steps {
+                script {
+                    withDockerRegistry(credentialsId: 'dockerid', toolName: 'dockertool') {
+                       sh "docker push  rajkumarsatya/srimage4"
+                    }
+                } 
             }
         }
     }
