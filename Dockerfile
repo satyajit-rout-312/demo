@@ -6,6 +6,6 @@ WORKDIR /usr/local/tomcat/webapps
 
 #RUN cp -R webapps.dist/* webapps/
 #RUN cd webapps/
-RUN wget -O ROOT.war --user=admin --password=Satyajit@123 http://16.16.142.255:8081/repository/maven-releases/com/example/our-school/release/our-school-release.war
+RUN wget -O ROOT.war --user=admin --password=Satyajit@123 http://13.49.134.145:8081/repository/maven-releases/com/example/our-school/release/our-school-release.war
 
 # If there are other setup commands, include them here
